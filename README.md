@@ -8,6 +8,7 @@ This original project is extended in other branches, as follows:
 - [`core-library`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/core-library) shows benefits of using AWS core library when implementing your functions.
 - [`custom-types`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/custom-types) creates custom types to handle messages.
 - [`sam`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/sam) uses AWS SAM to simplify deployment.
+- [`testing`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/testing) runs unit and local tests.
 
 ## Overview
 A _Lambda_ function is a unit of code that implements a single computational task. For instance, a CRUD application could be implemented as a set of four _Lambda_ functions - one for each CRUD task.
