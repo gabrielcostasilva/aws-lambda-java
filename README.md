@@ -1,32 +1,30 @@
-# AWS LAMBDA IMPLEMENTATION WITH JAVA
-This project shows a minimal Java implementation for a AWS Lambda function. 
+# AWS LAMBDA IMPLEMENTATION WITH JAVA - CUSTOM TYPES
+This project shows a Java implementation representing an AWS Lambda function. 
 
-## Other Branches
-
-This original project is extended in other branches, as follows:
-
-- [core-library](https://github.com/gabrielcostasilva/aws-lambda-java/tree/core-library) shows benefits of using AWS core library when implementing your functions.
+> This branch extends the [original project](https://github.com/gabrielcostasilva/aws-lambda-java.git) by wrapping content into custom types.
 
 ## Overview
-A _Lambda_ function is a unit of code that implements a single computational task. For instance, a CRUD application could be implemented as a set of four _Lambda_ functions - one for each CRUD task.
+This project covers scenarios that need custom types, like `Customer` or `Product`.
 
-This project does not rely on any external dependency. It basically sets a method that reads and returns a `String`, like so:
+AWS Lambda automatically serialises and deserialises JSON into/from custom types. All you need is to use your custom types with your handler, like so: 
 
 ```java
-package com.example.sblambda;
+(...)
 
-public class SimpleHandler {
+public Output handleRequest(Input input) {
+        return new Output(input.getMessage().toUpperCase());
+}
 
-    public String handleRequest(String input) {
-        return input.toUpperCase();
-    }
-    
+(...)
+```
+
+`Input` and `Output` are custom types created to handle messages. Both objects are represented by the following JSON object:
+
+```json
+{
+    "message": "Hello World!"
 }
 ```
 
-AWS Lambda hand out requests to the `handleRequest` method. 
-
-## Deploy & Test
-You need to create a Lambda function using the AWS Lambda console, CLI or any other tool, like SAM. Then you package your code (`mvn package`), and deploy it. Please check out [reference links in this repository](https://github.com/gabrielcostasilva/aws-lambda-java-playground.git) you need assistance with this process.
-
-> Do not forget to set the handler to this particular class.
+## Deploy
+Please check out the main project for instructions on deploying this project.
