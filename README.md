@@ -1,34 +1,61 @@
-# AWS LAMBDA IMPLEMENTATION WITH JAVA
-This project shows a minimal Java implementation for a AWS Lambda function. 
+# AWS LAMBDA IMPLEMENTATION WITH JAVA - TESTING
+This project shows a Java implementation representing an AWS Lambda function. 
 
-## Other Branches
-
-This original project is extended in other branches, as follows:
-
-- [`core-library`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/core-library) shows benefits of using AWS core library when implementing your functions.
-- [`custom-types`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/custom-types) creates custom types to handle messages.
-- [`sam`](https://github.com/gabrielcostasilva/aws-lambda-java/tree/sam) uses AWS SAM to simplify deployment.
+> This branch extends the [original project](https://github.com/gabrielcostasilva/aws-lambda-java.git) by exploring testing solutions.
 
 ## Overview
-A _Lambda_ function is a unit of code that implements a single computational task. For instance, a CRUD application could be implemented as a set of four _Lambda_ functions - one for each CRUD task.
+An AWS Lambda function is just a method in a class. Therefore, typical testing solutions work just fine - which includes [JUnit](https://junit.org) and [Mockito](https://site.mockito.org).
 
-This project does not rely on any external dependency. It basically sets a method that reads and returns a `String`, like so:
+> Check out [this repository](https://github.com/gabrielcostasilva/sb-testing.git) for getting started testing with Spring Boot.
+
+Therefore, a simple test could be as follows:
 
 ```java
-package com.example.sblambda;
+@Test
+public void test() {
 
-public class SimpleHandler {
+    var handler = new SimpleHandler();
+    assertNotNull(handler);
 
-    public String handleRequest(String input) {
-        return input.toUpperCase();
-    }
-    
+    assertEquals(
+        "HELLO WORLD", 
+        handler
+            .handleRequest(new Input("hello world"))
+            .getMessage());
+
 }
 ```
+> Of course, you need to add [JUnit as a dependency](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api/5.9.3) to your [POM.xml](./pom.xml).
 
-AWS Lambda hand out requests to the `handleRequest` method. 
+## How to Test the Lambda Function
+JUnit and Mockito are useful to test business rules and workflows, but to test the Lambda function itself you would need to deploy the function and use the Lambda console.
 
-## Deploy & Test
-You need to create a Lambda function using the AWS Lambda console, CLI or any other tool, like SAM. Then you package your code (`mvn package`), and deploy it. Please check out [reference links in this repository](https://github.com/gabrielcostasilva/aws-lambda-java-playground.git) you need assistance with this process.
+Luckily, AWS SAM enables testing a Lambda function without the need for deployment.
 
-> Do not forget to set the handler to this particular class.
+> Check out [this repository](https://github.com/gabrielcostasilva/aws-lambda-java/tree/sam) if you are new to SAM.
+
+First, run `sam build`. 
+
+Then, run: `echo "{\"message\": \"hello\"}" | sam local invoke SimpleHandlerFunction -e -`
+
+You should receive something like so:
+
+```
+Reading invoke payload from stdin (you can also pass it from file with --event)                                   
+Invoking com.example.sblambda.SimpleHandler::handleRequest (java17)                                               
+Local image was not found.                                                                                        
+Removing rapid images for repo public.ecr.aws/sam/emulation-java17                                                
+Building image...................................................................................................................................................................
+Using local image: public.ecr.aws/lambda/java:17-rapid-arm64.                                                     
+                                                                                                                  
+Mounting /Users/gabriel/Downloads/aws-lambda-java/.aws-sam/build/SimpleHandlerFunction as /var/task:ro,delegated, 
+inside runtime container                                                                                          
+START RequestId: b77b5702-c8af-45e7-b05a-edcd61f1bbc2 Version: $LATEST
+{"message":"HELLO"}END RequestId: f2cb0b29-a42f-4f35-ad29-7ed8f33c3fe7
+REPORT RequestId: f2cb0b29-a42f-4f35-ad29-7ed8f33c3fe7	Init Duration: 0.03 ms	Duration: 147.97 ms	Billed Duration: 148 ms	Memory Size: 512 MB	Max Memory Used: 512 MB	
+```
+
+> SAM local requires Docker installed and running!
+
+## Further References
+- [Testing Functions](https://docs.aws.amazon.com/lambda/latest/dg/testing-guide.html) is the official AWS Lambda documentation section on testing.
