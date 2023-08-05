@@ -26,3 +26,5 @@ Here, we are building on top of the original project. Therefore, I had to create
 > You can [use parameters](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-deploy.html) to deploy the application without all the questions asked by `sam deploy --guided`.
 
 SAM will use AWS CloudFormation under the hood to deploy your resources. As a result, you can easily manage your entire stack. To delete, you just run `sam delete` and provide your stack name.
+
+> SAM handles the packaging for you during the build phase. So, for a Java application, it means it creates a JAR file.
